@@ -1,12 +1,16 @@
 # Dependencies
 node_modules
 .pnpm-store
+package-lock.json
+yarn.lock
 
 # Build outputs
 dist
 .next
 out
 build
+.data
+*.tsbuildinfo
 
 # Environment files
 .env
@@ -30,6 +34,7 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
 # Testing
 coverage
@@ -48,6 +53,13 @@ docker-compose.override.yml
 # Certificates & Keys
 *.pem
 *.key
+
+# Vercel
+.vercel
+
+# Nested folders (cleanup artifacts)
+Medfellow-LMS/
+MedFellow-LMS/
 *.crt
 *.p12
 
