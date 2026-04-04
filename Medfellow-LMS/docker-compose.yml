@@ -1,0 +1,236 @@
+version: '3.9'
+
+services:
+  # ===========================================
+  # DATABASES (Polyglot Persistence)
+  # ===========================================
+  
+  postgres:
+    image: postgres:16-alpine
+    container_name: ibmp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ibmp_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ibmp_secure_2024}
+      POSTGRES_DB: ibmp_main
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ibmp_admin -d ibmp_main"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7.0
+    container_name: ibmp-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ibmp_admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-ibmp_secure_2024}
+      MONGO_INITDB_DATABASE: ibmp_content
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ibmp-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-ibmp_secure_2024}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5.15-community
+    container_name: ibmp-neo4j
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-ibmp_secure_2024}
+      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7474"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # TimescaleDB for time-series analytics
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: ibmp-timescaledb
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ibmp_analytics
+      POSTGRES_PASSWORD: ${TIMESCALE_PASSWORD:-ibmp_secure_2024}
+      POSTGRES_DB: ibmp_analytics
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  # ===========================================
+  # MESSAGE QUEUE & STREAMING
+  # ===========================================
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: ibmp-kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: ibmp-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+
+  # ===========================================
+  # VECTOR DATABASE (AI Embeddings)
+  # ===========================================
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ibmp-qdrant
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
+  # ===========================================
+  # SEARCH ENGINE
+  # ===========================================
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.5
+    container_name: ibmp-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-ibmp_search_key_2024}
+      MEILI_ENV: development
+    volumes:
+      - meilisearch_data:/meili_data
+    ports:
+      - "7700:7700"
+
+  # ===========================================
+  # MONITORING & OBSERVABILITY
+  # ===========================================
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: ibmp-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: ibmp-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-ibmp_admin_2024}
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infrastructure/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+
+  # ===========================================
+  # BLOCKCHAIN LOCAL NODE (Development)
+  # ===========================================
+
+  hardhat:
+    image: node:20-alpine
+    container_name: ibmp-hardhat
+    working_dir: /app
+    volumes:
+      - ./services/blockchain:/app
+    command: sh -c "npm install && npx hardhat node"
+    ports:
+      - "8545:8545"
+
+  # ===========================================
+  # IPFS (Decentralized Storage)
+  # ===========================================
+
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: ibmp-ipfs
+    restart: unless-stopped
+    volumes:
+      - ipfs_data:/data/ipfs
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+  neo4j_data:
+  neo4j_logs:
+  timescale_data:
+  kafka_data:
+  zookeeper_data:
+  qdrant_data:
+  meilisearch_data:
+  prometheus_data:
+  grafana_data:
+  ipfs_data:
+
+networks:
+  default:
+    name: ibmp-network
+
