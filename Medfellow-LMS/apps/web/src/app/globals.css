@@ -9,7 +9,7 @@
 
 @layer base {
   :root {
-    /* ── Light Mode ── */
+    /* ── Light Mode — MedFellow Brand Colors ── */
     --background:         210 20% 98%;   /* #f8fafc — very light slate */
     --foreground:         222 39% 11%;   /* #0f172a — near black */
 
@@ -19,13 +19,13 @@
     --popover:            0 0% 100%;
     --popover-foreground: 222 39% 11%;
 
-    --primary:            160 84% 39%;   /* emerald-600 #059669 */
+    --primary:            173 48% 39%;   /* Medical teal #2d9596 from logo */
     --primary-foreground: 0 0% 100%;
 
-    --secondary:          215 25% 27%;   /* slate-700 */
+    --secondary:          173 56% 27%;   /* Darker teal #1e6b6e */
     --secondary-foreground: 0 0% 100%;
 
-    --accent:             38 92% 50%;    /* amber-500 */
+    --accent:             173 72% 60%;   /* Light teal accent #5eead4 */
     --accent-foreground:  222 39% 11%;
 
     --muted:              210 20% 96%;   /* slate-100 */
@@ -33,7 +33,7 @@
 
     --border:             214 32% 91%;   /* slate-200 */
     --input:              214 32% 91%;
-    --ring:               160 84% 39%;
+    --ring:               173 48% 39%;   /* Medical teal */
 
     --destructive:        0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -48,7 +48,7 @@
   }
 
   .dark {
-    /* ── Dark Mode — Deep Navy ── */
+    /* ── Dark Mode — MedFellow Brand ── */
     --background:         222 47% 11%;
     --foreground:         210 20% 98%;
 
@@ -58,13 +58,13 @@
     --popover:            223 47% 14%;
     --popover-foreground: 210 20% 98%;
 
-    --primary:            160 72% 45%;
+    --primary:            173 64% 50%;   /* Lighter medical teal for dark mode */
     --primary-foreground: 0 0% 100%;
 
-    --secondary:          215 20% 65%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary:          173 56% 35%;
+    --secondary-foreground: 0 0% 100%;
 
-    --accent:             38 92% 55%;
+    --accent:             173 72% 60%;
     --accent-foreground:  222 47% 11%;
 
     --muted:              223 47% 17%;
@@ -72,7 +72,7 @@
 
     --border:             223 47% 20%;
     --input:              223 47% 20%;
-    --ring:               160 72% 45%;
+    --ring:               173 64% 50%;
 
     --destructive:        0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -148,7 +148,7 @@
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    background-image: linear-gradient(135deg,#059669 0%,#0d9488 50%,#0891b2 100%);
+    background-image: linear-gradient(135deg,#2d9596 0%,#1e6b6e 50%,#0f766e 100%);
   }
   .gradient-text-warm {
     background-clip: text;

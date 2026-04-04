@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { AnimatePresence, motion } from 'framer-motion';
 import {

@@ -9,6 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // MedFellow Brand Colors (from logo)
+        brand: {
+          primary: '#2d9596',   // Medical teal from logo
+          secondary: '#1e6b6e', // Darker teal
+          light: '#5eead4',     // Light teal accent
+          dark: '#0f766e',      // Deep teal
+        },
         // CSS Variable Colors for theming
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

@@ -58,8 +58,8 @@ export default function HeroSection() {
       <div className="absolute inset-0 pattern-dots opacity-40 pointer-events-none" />
 
       {/* Soft ambient orbs */}
-      <div className="absolute top-1/4 left-0 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-teal-400/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-0 w-80 h-80 bg-[#2d9596]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-[#2d9596]/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -75,9 +75,9 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300 text-sm font-medium mb-6"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2d9596] animate-pulse" />
               Your Medical Learning Platform
             </motion.div>
 
@@ -95,7 +95,7 @@ export default function HeroSection() {
 
             {/* Rotating feature */}
             <div className="flex items-center gap-3 mb-8 h-7">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-[#2d9596] flex-shrink-0" />
               <div className="overflow-hidden h-6 relative w-72">
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -127,16 +127,12 @@ export default function HeroSection() {
             {/* Trust badges */}
             <div className="flex flex-wrap items-center gap-5 text-sm text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-1.5">
-                <Shield className="w-4 h-4 text-emerald-500" />
+                <Shield className="w-4 h-4 text-[#2d9596]" />
                 HIPAA Compliant
               </div>
               <div className="flex items-center gap-1.5">
-                <Award className="w-4 h-4 text-emerald-500" />
-                ACCME Accredited
-              </div>
-              <div className="flex items-center gap-1.5">
-                <GraduationCap className="w-4 h-4 text-emerald-500" />
-                CME Credits
+                <Award className="w-4 h-4 text-[#2d9596]" />
+                Accredited
               </div>
             </div>
           </motion.div>
