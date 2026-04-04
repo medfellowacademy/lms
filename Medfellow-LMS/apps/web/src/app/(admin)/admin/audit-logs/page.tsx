@@ -32,8 +32,11 @@ import {
 } from 'lucide-react';
 
 // Audit log entries
-const auditLogs: any[] = [];
-
+const auditLogs: any[] = [
+  {
+    id: '1',
+    timestamp: '2024-12-03 14:32:45',
+    user: { name: 'Admin', email: 'admin@medfellow.academy', avatar: 'AD' },
     action: 'user.role.updated',
     category: 'users',
     description: 'Changed user role from Student to Instructor',

@@ -297,15 +297,4 @@ export default function RolesPage() {
     </div>
   );
 }
-                    <MoreVertical className="w-4 h-4 text-gray-400" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 

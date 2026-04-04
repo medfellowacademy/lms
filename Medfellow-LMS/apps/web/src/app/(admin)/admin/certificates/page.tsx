@@ -34,8 +34,10 @@ const templates = [
 ];
 
 // Issued certificates
-const certificates: any[] = [];
-
+const certificates: any[] = [
+  {
+    id: 'CERT-2024-001234',
+    recipient: { name: 'User Name', email: 'sarah.chen@stanford.edu', avatar: 'SC' },
     course: 'Interventional Cardiology Fellowship',
     template: 'fellowship',
     issuedAt: 'Dec 1, 2024',
