@@ -44,8 +44,8 @@ export function seedIfNeeded(): void {
       ];
       
       demoUsers.forEach((userData) => {
-        const user = store.user.create({ data: userData });
-        console.log(`[Seed] Created user: ${user.email}`);
+        store.user.create({ data: userData });
+        console.log(`[Seed] Created user: ${userData.email}`);
       });
       
       console.log('[Seed] Demo accounts created successfully!');
