@@ -36,10 +36,22 @@ export async function POST(request: NextRequest) {
       success: true,
       user: safeUser,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login error:', error);
+    
+    // Check if it's a database connection error
+    if (error?.message?.includes('relation') || error?.message?.includes('table')) {
+      return NextResponse.json(
+        { 
+          error: 'Database not initialized. Please run the SQL setup script first.',
+          hint: 'See database/supabase/001_setup_complete.sql'
+        },
+        { status: 503 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error?.message },
       { status: 500 }
     );
   }
