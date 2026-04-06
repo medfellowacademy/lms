@@ -51,7 +51,7 @@ export async function loginUser(email: string, password: string): Promise<{ toke
   if (!user) return null;
   if (!verifyPassword(password, (user as any).passwordHash)) return null;
 
-  const token = createSessionToken(user.id);
+  const token = createSessionToken((user as any).id);
   return { token, user };
 }
 
