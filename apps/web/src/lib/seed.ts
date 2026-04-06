@@ -6,49 +6,29 @@ export function seedIfNeeded(): void {
     // Server-side only
     console.log('[Seed] Checking if seeding is needed...');
     
-    // Check if users exist
+    // Check if admin user exists
     const existingUsers = store.user.count();
     
     if (existingUsers === 0) {
-      console.log('[Seed] No users found, creating demo accounts...');
+      console.log('[Seed] No users found, creating initial admin account...');
       
-      // Create demo users
-      const demoUsers = [
-        {
-          email: 'admin@example.com',
-          passwordHash: hashPassword('demo123'),
-          firstName: 'Admin',
-          lastName: 'User',
-          role: 'admin',
-          isVerified: true,
-          avatar: null,
-        },
-        {
-          email: 'instructor@medfellow.academy',
-          passwordHash: hashPassword('instructor123'),
-          firstName: 'Dr. Sarah',
-          lastName: 'Johnson',
-          role: 'instructor',
-          isVerified: true,
-          avatar: null,
-        },
-        {
-          email: 'student@medfellow.academy',
-          passwordHash: hashPassword('student123'),
-          firstName: 'John',
-          lastName: 'Doe',
-          role: 'student',
-          isVerified: true,
-          avatar: null,
-        },
-      ];
+      // Create ONLY the admin account
+      // All other users (students, instructors) must be created via admin panel
+      const adminUser = {
+        email: 'admin@medfellow.academy',
+        passwordHash: hashPassword('MedFellow@Admin2026'),
+        firstName: 'Platform',
+        lastName: 'Administrator',
+        role: 'admin',
+        isVerified: true,
+        avatar: null,
+      };
       
-      demoUsers.forEach((userData) => {
-        store.user.create({ data: userData });
-        console.log(`[Seed] Created user: ${userData.email}`);
-      });
-      
-      console.log('[Seed] Demo accounts created successfully!');
+      store.user.create({ data: adminUser });
+      console.log('[Seed] ✅ Admin account created successfully!');
+      console.log('[Seed] 📧 Email: admin@medfellow.academy');
+      console.log('[Seed] 🔑 Password: MedFellow@Admin2026');
+      console.log('[Seed] ⚠️  IMPORTANT: Change this password after first login!');
     } else {
       console.log(`[Seed] Users already exist (${existingUsers} users found)`);
     }

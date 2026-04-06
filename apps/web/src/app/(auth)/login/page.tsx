@@ -59,8 +59,6 @@ export default function LoginPage() {
     }
   };
 
-  const fillDemo = (e: string, p: string) => { setEmail(e); setPassword(p); setError(''); };
-
   return (
     <div className="min-h-dvh flex">
 
@@ -179,30 +177,6 @@ export default function LoginPage() {
                 Create a free account
               </Link>
             </p>
-          </div>
-
-          {/* Demo accounts */}
-          <div className="mb-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5">
-              Quick Demo Access
-            </p>
-            <div className="space-y-1.5">
-              {[
-                { role: 'Admin',      email: 'admin@example.com',      pw: 'demo123' },
-                { role: 'Instructor', email: 'instructor@medfellow.academy', pw: 'instructor123' },
-                { role: 'Student',    email: 'student@medfellow.academy',    pw: 'student123' },
-              ].map((d) => (
-                <button
-                  key={d.role}
-                  type="button"
-                  onClick={() => fillDemo(d.email, d.pw)}
-                  className="w-full text-left text-xs px-3 py-2 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors flex items-center gap-2"
-                >
-                  <span className="font-semibold text-slate-700 dark:text-slate-200 w-16 flex-shrink-0">{d.role}</span>
-                  <span className="text-slate-400 truncate">{d.email}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Error */}

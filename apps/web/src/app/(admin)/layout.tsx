@@ -157,11 +157,11 @@ export default function AdminLayout({
           {/* Admin Profile */}
           <div className="flex items-center gap-3 pl-3 border-l border-gray-200">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-semibold text-sm">
-              SA
+              {user?.firstName?.[0]}{user?.lastName?.[0]}
             </div>
             <div className="hidden lg:block">
-              <div className="text-sm font-medium text-gray-800">Super Admin</div>
-              <div className="text-xs text-gray-500">admin@example.com</div>
+              <div className="text-sm font-medium text-gray-800">{user?.firstName} {user?.lastName}</div>
+              <div className="text-xs text-gray-500">{user?.email}</div>
             </div>
           </div>
         </div>
