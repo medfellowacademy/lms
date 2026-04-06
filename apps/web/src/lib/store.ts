@@ -46,10 +46,16 @@ export function hashPassword(password: string): string {
 }
 
 export function verifyPassword(password: string, stored: string): boolean {
+  console.log('[VerifyPassword] Stored hash format:', stored?.substring(0, 20) + '...');
   const [salt, hash] = stored.split(':');
-  if (!salt || !hash) return false;
+  if (!salt || !hash) {
+    console.error('[VerifyPassword] Invalid hash format - missing salt or hash');
+    return false;
+  }
   const verify = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
-  return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(verify));
+  const match = crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(verify));
+  console.log('[VerifyPassword] Password match:', match);
+  return match;
 }
 
 // Generic model operations

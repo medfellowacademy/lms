@@ -10,6 +10,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
+    console.log('[Login] Attempting login for:', email);
+
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
@@ -20,11 +22,14 @@ export async function POST(request: NextRequest) {
     const result = await loginUser(email, password);
 
     if (!result) {
+      console.error('[Login] Login failed for:', email);
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
+
+    console.log('[Login] Login successful for:', email);
 
     // Set session cookie
     await setSessionCookie(result.token);

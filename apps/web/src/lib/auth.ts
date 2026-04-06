@@ -47,10 +47,21 @@ function verifySessionToken(token: string): { userId: string } | null {
 
 // Login with email/password — returns session token
 export async function loginUser(email: string, password: string): Promise<{ token: string; user: any } | null> {
+  console.log('[Auth] Looking up user:', email);
   const user = await db.user.findFirst({ where: { email: email.toLowerCase() } });
-  if (!user) return null;
-  if (!verifyPassword(password, (user as any).passwordHash)) return null;
+  
+  if (!user) {
+    console.error('[Auth] User not found:', email);
+    return null;
+  }
+  
+  console.log('[Auth] User found, verifying password');
+  if (!verifyPassword(password, (user as any).passwordHash)) {
+    console.error('[Auth] Password verification failed');
+    return null;
+  }
 
+  console.log('[Auth] Password verified, creating session');
   const token = createSessionToken((user as any).id);
   return { token, user };
 }
