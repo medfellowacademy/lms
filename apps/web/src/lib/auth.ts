@@ -5,7 +5,8 @@
 
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
-import { store, verifyPassword } from './store';
+import { verifyPassword } from './store';
+import { db } from './db';
 
 export interface AuthUser {
   id: string;
@@ -46,7 +47,7 @@ function verifySessionToken(token: string): { userId: string } | null {
 
 // Login with email/password — returns session token
 export async function loginUser(email: string, password: string): Promise<{ token: string; user: any } | null> {
-  const user = store.user.findFirst({ where: { email: email.toLowerCase() } });
+  const user = await db.user.findFirst({ where: { email: email.toLowerCase() } });
   if (!user) return null;
   if (!verifyPassword(password, (user as any).passwordHash)) return null;
 
@@ -82,7 +83,7 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     const session = verifySessionToken(token);
     if (!session) return null;
 
-    const user = store.user.findUnique({ where: { id: session.userId } });
+    const user = await db.user.findUnique({ where: { id: session.userId } });
     if (!user) return null;
 
     return {

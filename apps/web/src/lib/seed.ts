@@ -1,13 +1,14 @@
-import { store, hashPassword } from './store';
+import { hashPassword } from './store';
+import { db } from './db';
 
 // Seed function for initial data setup
-export function seedIfNeeded(): void {
+export async function seedIfNeeded(): Promise<void> {
   if (typeof window === 'undefined') {
     // Server-side only
     console.log('[Seed] Checking if seeding is needed...');
     
     // Check if admin user exists
-    const existingUsers = store.user.count();
+    const existingUsers = await db.user.count();
     
     if (existingUsers === 0) {
       console.log('[Seed] No users found, creating initial admin account...');
@@ -24,7 +25,7 @@ export function seedIfNeeded(): void {
         avatar: null,
       };
       
-      store.user.create({ data: adminUser });
+      await db.user.create({ data: adminUser });
       console.log('[Seed] ✅ Admin account created successfully!');
       console.log('[Seed] 📧 Email: admin@medfellow.academy');
       console.log('[Seed] 🔑 Password: MedFellow@Admin2026');

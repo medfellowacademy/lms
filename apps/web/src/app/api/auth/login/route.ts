@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loginUser, setSessionCookie } from '@/lib/auth';
+import { seedIfNeeded } from '@/lib/seed';
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure database is seeded on first access
+    await seedIfNeeded();
+
     const body = await request.json();
     const { email, password } = body;
 

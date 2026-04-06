@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { store, hashPassword } from '@/lib/store';
+import { hashPassword } from '@/lib/store';
+import { db } from '@/lib/db';
 import { loginUser, setSessionCookie } from '@/lib/auth';
 import { seedIfNeeded } from '@/lib/seed';
 
-try { seedIfNeeded(); } catch {}
-
 export async function POST(request: NextRequest) {
   try {
+    // Ensure database is seeded on first access
+    await seedIfNeeded();
+
     const body = await request.json();
     const { email, password, firstName, lastName } = body;
 
@@ -25,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existing = store.user.findFirst({ where: { email: email.toLowerCase() } });
+    const existing = await db.user.findFirst({ where: { email: email.toLowerCase() } });
     if (existing) {
       return NextResponse.json(
         { error: 'An account with this email already exists' },
@@ -34,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new user
-    const user = store.user.create({
+    const user = await db.user.create({
       data: {
         email: email.toLowerCase(),
         passwordHash: hashPassword(password),
