@@ -194,9 +194,10 @@ function createModel(tableName: string, getClient: () => Promise<SupabaseClient>
 
 // Create database client factory
 async function createDbClient() {
-  // Import server client dynamically to avoid issues
-  const { createServerSupabaseClient } = await import('./supabase/server');
-  return await createServerSupabaseClient();
+  // Use admin client with service role to bypass RLS
+  // Since we're using custom session auth, not Supabase Auth
+  const { createAdminClient } = await import('./supabase/server');
+  return createAdminClient();
 }
 
 // Create the db object with all models
