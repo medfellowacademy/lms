@@ -49,7 +49,7 @@ You should see:
 
 ## ✅ Step 4: Login
 
-- **Email:** admin@medfellow.academy
+- **Username:** admin
 - **Password:** MedFellow@Admin2026
 
 The admin user will be created automatically on first login.

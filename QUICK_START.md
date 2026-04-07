@@ -153,7 +153,7 @@ You should see the landing page! 🎉
 
 1. Click **"Get Started"** or **"Register"**
 2. Fill in:
-   - Email: your-email@example.com
+   - Username: your_username
    - Password: secure-password
    - First Name: Your Name
    - Last Name: Your Last Name
@@ -165,12 +165,12 @@ You should see the landing page! 🎉
 **Open Supabase SQL Editor** and run:
 
 ```sql
--- Replace with your actual email
+-- Replace with your actual username
 UPDATE "User"
 SET 
-  role = 'SUPER_ADMIN',
-  "emailVerified" = NOW()
-WHERE email = 'your-email@example.com';
+  role = 'ADMIN',
+  "isVerified" = true
+WHERE username = 'your_username';
 ```
 
 ### 3.5 Access Admin Dashboard

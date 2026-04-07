@@ -107,7 +107,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    email: '',
+    username: '',
     password: '',
     specialty: '',
     institution: '',
@@ -136,7 +136,7 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: formData.email,
+          username: formData.username,
           password: formData.password,
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -253,16 +253,16 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Email */}
+                {/* Username */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Email address</label>
+                  <label className="text-sm font-medium">Username</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => updateFormData('email', e.target.value)}
-                      placeholder="doctor@hospital.com"
+                      type="text"
+                      value={formData.username}
+                      onChange={(e) => updateFormData('username', e.target.value)}
+                      placeholder="your_username"
                       className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                       required
                     />

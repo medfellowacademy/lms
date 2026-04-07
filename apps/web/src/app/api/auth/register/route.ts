@@ -10,9 +10,9 @@ export async function POST(request: NextRequest) {
     await seedIfNeeded();
 
     const body = await request.json();
-    const { email, password, firstName, lastName } = body;
+    const { username, password, firstName, lastName } = body;
 
-    if (!email || !password || !firstName || !lastName) {
+    if (!username || !password || !firstName || !lastName) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
@@ -27,10 +27,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existing = await db.user.findFirst({ where: { email: email.toLowerCase() } });
+    const existing = await db.user.findFirst({ where: { username: username.toLowerCase() } });
     if (existing) {
       return NextResponse.json(
-        { error: 'An account with this email already exists' },
+        { error: 'An account with this username already exists' },
         { status: 409 }
       );
     }
@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
     // Create new user
     const user = await db.user.create({
       data: {
-        email: email.toLowerCase(),
+        username: username.toLowerCase(),
+        email: `${username.toLowerCase()}@medfellow.local`, // Generate a placeholder email
         passwordHash: hashPassword(password),
         firstName,
         lastName,
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Auto-login after registration
-    const result = await loginUser(email.toLowerCase(), password);
+    const result = await loginUser(username.toLowerCase(), password);
     if (result) {
       await setSessionCookie(result.token);
     }

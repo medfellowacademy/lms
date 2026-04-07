@@ -7,7 +7,7 @@
 ### Login Credentials:
 
 ```
-Email:    admin@medfellow.academy
+Username: admin
 Password: MedFellow@Admin2026
 ```
 
@@ -28,7 +28,13 @@ After first login:
 
 ### 2. What's Changed
 
+✅ **Authentication System:**
+- Simple username/password login (no email required)
+- Session-based authentication with secure cookies
+- Clean, straightforward login process
+
 ✅ **Removed:**
+- Complex email-based authentication
 - All demo accounts (instructor, student demos)
 - "Quick Demo Access" section from login page
 - Hardcoded demo credentials
@@ -47,7 +53,7 @@ After first login:
 
 **Option 1: Self-Registration (Recommended)**
 1. Students go to `/register`
-2. They create their own account
+2. They create their own account with username and password
 3. You can manage them in **Admin → Users**
 
 **Option 2: Admin Creates Manually**
@@ -55,7 +61,7 @@ After first login:
 2. Go to **Admin → Users**
 3. Click **"Add User"** or **"Create New User"**
 4. Fill in details:
-   - Email
+   - Username
    - First Name / Last Name
    - Role: STUDENT
    - Set temporary password
@@ -88,7 +94,7 @@ Students will NOT see all courses by default. They only see:
 1. Go to **Admin → Enrollments**
 2. Click **"Enroll Student"**
 3. Select:
-   - Student (by email/name)
+   - Student (by username/name)
    - Course
    - Enrollment status: ACTIVE
 4. Save

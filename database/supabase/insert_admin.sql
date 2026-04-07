@@ -2,15 +2,17 @@
 -- Insert Admin User Manually
 -- =============================================================================
 -- Run this in Supabase SQL Editor to create the admin account
+-- Username: admin
 -- Email: admin@medfellow.academy
 -- Password: MedFellow@Admin2026
 -- =============================================================================
 
 -- Delete existing admin if exists (in case of duplicates)
-DELETE FROM "User" WHERE email = 'admin@medfellow.academy';
+DELETE FROM "User" WHERE email = 'admin@medfellow.academy' OR username = 'admin';
 
 -- Insert admin user with hashed password
 INSERT INTO "User" (
+  username,
   email,
   "passwordHash",
   "firstName",
@@ -23,6 +25,7 @@ INSERT INTO "User" (
   rank,
   streak
 ) VALUES (
+  'admin',
   'admin@medfellow.academy',
   '37621ab67d99e7beaf838637ebad01eb:0ed38ddd2fc9f6f6f3ede293f8d9cf586ff45ee483c612d45a087c7727c7c9b5d43f09526cc58936ad66df1b194fa75f84888285774de1256d23b47f2fc673ed',
   'Platform',
@@ -37,6 +40,6 @@ INSERT INTO "User" (
 );
 
 -- Verify the admin user was created successfully
-SELECT email, "firstName", "lastName", role, "isVerified", "isActive" 
+SELECT username, email, "firstName", "lastName", role, "isVerified", "isActive" 
 FROM "User" 
-WHERE email = 'admin@medfellow.academy';
+WHERE username = 'admin';

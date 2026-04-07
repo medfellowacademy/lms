@@ -35,6 +35,7 @@ CREATE TYPE "NotificationType" AS ENUM ('ACHIEVEMENT', 'COURSE', 'CERTIFICATE', 
 
 CREATE TABLE "User" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
+    "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
     "passwordHash" TEXT,
@@ -64,6 +65,7 @@ CREATE TABLE "User" (
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "User_auth0Id_key" ON "User"("auth0Id");
 CREATE INDEX "User_email_idx" ON "User"("email");

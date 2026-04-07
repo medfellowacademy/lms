@@ -8,28 +8,28 @@ export async function POST(request: NextRequest) {
     await seedIfNeeded();
 
     const body = await request.json();
-    const { email, password } = body;
+    const { username, password } = body;
 
-    console.log('[Login] Attempting login for:', email);
+    console.log('[Login] Attempting login for:', username);
 
-    if (!email || !password) {
+    if (!username || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: 'Username and password are required' },
         { status: 400 }
       );
     }
 
-    const result = await loginUser(email, password);
+    const result = await loginUser(username, password);
 
     if (!result) {
-      console.error('[Login] Login failed for:', email);
+      console.error('[Login] Login failed for:', username);
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: 'Invalid username or password' },
         { status: 401 }
       );
     }
 
-    console.log('[Login] Login successful for:', email);
+    console.log('[Login] Login successful for:', username);
 
     // Set session cookie
     await setSessionCookie(result.token);

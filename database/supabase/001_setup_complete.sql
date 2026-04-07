@@ -90,6 +90,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 CREATE TABLE IF NOT EXISTS "User" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
+    "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMPTZ,
     "passwordHash" TEXT,
@@ -118,6 +119,22 @@ CREATE TABLE IF NOT EXISTS "User" (
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
+-- Add username column if it doesn't exist (for existing tables)
+DO $$ 
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'User' AND column_name = 'username'
+    ) THEN
+        ALTER TABLE "User" ADD COLUMN "username" TEXT;
+        -- Generate usernames from emails for existing users
+        UPDATE "User" SET "username" = LOWER(SPLIT_PART(email, '@', 1)) WHERE "username" IS NULL;
+        -- Make it NOT NULL after populating
+        ALTER TABLE "User" ALTER COLUMN "username" SET NOT NULL;
+    END IF;
+END $$;
+
+CREATE UNIQUE INDEX IF NOT EXISTS "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX IF NOT EXISTS "User_auth0Id_key" ON "User"("auth0Id");
 CREATE INDEX IF NOT EXISTS "User_email_idx" ON "User"("email");

@@ -17,6 +17,7 @@ export async function seedIfNeeded(): Promise<void> {
         // Create ONLY the admin account
         // All other users (students, instructors) must be created via admin panel
         const adminUser = {
+          username: 'admin',
           email: 'admin@medfellow.academy',
           passwordHash: hashPassword('MedFellow@Admin2026'),
           firstName: 'Platform',
@@ -34,6 +35,7 @@ export async function seedIfNeeded(): Promise<void> {
         
         await db.user.create({ data: adminUser });
         console.log('[Seed] ✅ Admin account created successfully!');
+        console.log('[Seed] 👤 Username: admin');
         console.log('[Seed] 📧 Email: admin@medfellow.academy');
         console.log('[Seed] 🔑 Password: MedFellow@Admin2026');
         console.log('[Seed] ⚠️  IMPORTANT: Change this password after first login!');

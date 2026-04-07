@@ -45,13 +45,13 @@ function verifySessionToken(token: string): { userId: string } | null {
   }
 }
 
-// Login with email/password — returns session token
-export async function loginUser(email: string, password: string): Promise<{ token: string; user: any } | null> {
-  console.log('[Auth] Looking up user:', email);
-  const user = await db.user.findFirst({ where: { email: email.toLowerCase() } });
+// Login with username/password — returns session token
+export async function loginUser(username: string, password: string): Promise<{ token: string; user: any } | null> {
+  console.log('[Auth] Looking up user:', username);
+  const user = await db.user.findFirst({ where: { username: username.toLowerCase() } });
   
   if (!user) {
-    console.error('[Auth] User not found:', email);
+    console.error('[Auth] User not found:', username);
     return null;
   }
   
