@@ -39,7 +39,6 @@ import {
   Network,
   FileQuestion,
   Video,
-  Image,
   FolderOpen,
 } from 'lucide-react';
 
