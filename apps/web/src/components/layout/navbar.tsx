@@ -74,9 +74,13 @@ export default function Navbar() {
 
             {/* ── Logo ── */}
             <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105">
-                <span className="text-white font-bold text-sm tracking-tight">MF</span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="MedFellow Logo"
+                width={36}
+                height={36}
+                className="transition-transform duration-200 group-hover:scale-105"
+              />
               <span className="text-lg font-display font-bold text-slate-900 dark:text-white hidden sm:block">
                 MedFellow
               </span>

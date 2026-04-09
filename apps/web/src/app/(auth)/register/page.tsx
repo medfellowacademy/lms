@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Float, Sphere, MeshDistortMaterial, Torus } from '@react-three/drei';
@@ -183,9 +184,12 @@ export default function RegisterPage() {
         >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-ibmp-500 to-neural-500 flex items-center justify-center">
-              <span className="text-white font-bold">MF</span>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="MedFellow Logo"
+              width={40}
+              height={40}
+            />
             <span className="font-display font-bold text-xl gradient-text">MedFellow</span>
           </Link>
 

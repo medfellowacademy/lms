@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
@@ -98,9 +99,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="flex items-center h-16 px-4 border-b border-border flex-shrink-0 overflow-hidden">
           <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <span className="text-white font-bold text-sm">MF</span>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="MedFellow Logo"
+              width={36}
+              height={36}
+              className="flex-shrink-0"
+            />
             {!collapsed && (
               <span className="font-display font-bold text-base gradient-text truncate">MedFellow</span>
             )}
@@ -229,9 +234,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {/* Drawer header */}
               <div className="flex items-center justify-between h-16 px-4 border-b border-border">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                    <span className="text-white font-bold text-xs">MF</span>
-                  </div>
+                  <Image
+                    src="/logo.png"
+                    alt="MedFellow Logo"
+                    width={32}
+                    height={32}
+                  />
                   <span className="font-display font-bold gradient-text">MedFellow</span>
                 </div>
                 <button

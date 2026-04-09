@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   Heart,
@@ -140,9 +141,12 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/" className="inline-flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-ibmp-500 to-neural-500 flex items-center justify-center">
-                <span className="text-white font-bold text-lg">MF</span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="MedFellow Logo"
+                width={40}
+                height={40}
+              />
               <span className="font-display font-bold text-xl gradient-text">MedFellow</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
