@@ -36,61 +36,8 @@ import {
   Star,
 } from 'lucide-react';
 
-// Sample questions
-const sampleQuestions = [
-  {
-    id: 1,
-    type: 'mcq',
-    difficulty: 'intermediate',
-    topic: 'Hemodynamics',
-    question: 'A 65-year-old patient presents with severe aortic stenosis. Echo shows AVA 0.7 cm², mean gradient 48 mmHg. Which hemodynamic finding is MOST consistent with this presentation?',
-    options: [
-      'Low cardiac output with preserved LVEF',
-      'High cardiac output with dilated LV',
-      'Normal cardiac output with severe LV dysfunction',
-      'Elevated PCWP with normal LVEF',
-    ],
-    correctAnswer: 0,
-    explanation: 'In severe AS with small AVA and high gradient, patients often have low cardiac output despite preserved LVEF due to the afterload mismatch. The LV works harder to overcome the obstruction.',
-    aiHint: 'Consider the relationship between valve area, gradient, and cardiac output...',
-    timeAllowed: 120,
-  },
-  {
-    id: 2,
-    type: 'case',
-    difficulty: 'advanced',
-    topic: 'STEMI Management',
-    question: 'A 58-year-old male presents 90 minutes after chest pain onset. ECG shows 4mm ST elevation in V1-V4. BP 88/60, HR 110. What is the MOST appropriate next step?',
-    options: [
-      'IV fluids and dobutamine, then PCI',
-      'Emergent PCI with mechanical circulatory support standby',
-      'Thrombolysis followed by rescue PCI if needed',
-      'Stabilize with IABP before catheterization',
-    ],
-    correctAnswer: 1,
-    explanation: 'Anterior STEMI with cardiogenic shock requires emergent revascularization. MCS standby is appropriate given hemodynamic compromise.',
-    aiHint: 'Time is muscle. Consider the trade-offs between stabilization and revascularization...',
-    timeAllowed: 150,
-  },
-  {
-    id: 3,
-    type: 'image',
-    difficulty: 'expert',
-    topic: 'Coronary Imaging',
-    question: 'Based on this IVUS image showing a calcified plaque at the LAD-D1 bifurcation, what is the optimal treatment strategy?',
-    imageUrl: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600',
-    options: [
-      'Direct stenting with kissing balloon inflation',
-      'Rotational atherectomy followed by DES',
-      'IVL followed by provisional stenting',
-      'Cutting balloon followed by drug-coated balloon',
-    ],
-    correctAnswer: 2,
-    explanation: 'Calcified bifurcation lesions benefit from calcium modification. IVL is preferred for circumferential calcium before stenting.',
-    aiHint: 'Consider calcium modification strategies for optimal stent expansion...',
-    timeAllowed: 180,
-  },
-];
+// Questions will be loaded from the database
+const sampleQuestions: any[] = [];
 
 // Test modes
 const testModes = [
@@ -100,26 +47,14 @@ const testModes = [
   { id: 'review', name: 'Review Mode', description: 'Focus on weak areas', icon: Target },
 ];
 
-// Performance data
+// Performance data will be loaded from the database
 const performanceData = {
-  totalAttempts: 456,
-  correctRate: 78,
-  avgTime: '1:45',
-  streak: 12,
-  topicBreakdown: [
-    { topic: 'Hemodynamics', score: 85, attempts: 89 },
-    { topic: 'STEMI', score: 82, attempts: 76 },
-    { topic: 'Imaging', score: 72, attempts: 65 },
-    { topic: 'Structural', score: 68, attempts: 58 },
-    { topic: 'EP', score: 65, attempts: 42 },
-  ],
-  difficultyProgression: [
-    { week: 'W1', score: 65 },
-    { week: 'W2', score: 68 },
-    { week: 'W3', score: 72 },
-    { week: 'W4', score: 75 },
-    { week: 'W5', score: 78 },
-  ],
+  totalAttempts: 0,
+  correctRate: 0,
+  avgTime: '0:00',
+  streak: 0,
+  topicBreakdown: [],
+  difficultyProgression: [],
 };
 
 export default function AdaptiveTestingPage() {

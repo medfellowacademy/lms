@@ -70,95 +70,10 @@ interface EnrolledCourse {
   modules: ModuleAccess[];
 }
 
-/* ─── Mock doctor data (would come from API) ─── */
-const mockDoctor = {
-  id: 'u1',
-  name: 'Dr. Priya Sharma',
-  email: 'priya.sharma@hospital.in',
-  avatar: 'PS',
-  medicalTitle: 'MD, FACC',
-  specialty: 'Interventional Cardiology',
-  institution: 'AIIMS New Delhi',
-  country: 'India',
-  yearsOfExperience: 8,
-  isVerified: true,
-  isActive: true,
-  role: 'STUDENT',
-  joinedAt: '2024-01-15',
-  lastActive: '2024-03-14',
-  level: 14,
-  xp: 8420,
-  streak: 12,
-  rank: 'Fellow',
-  totalCertificates: 2,
-  completedCourses: 2,
-};
+/* ─── Doctor data will be loaded from database ─── */
+const mockDoctor: any = null;
 
-const mockCourses: EnrolledCourse[] = [
-  {
-    enrollmentId: 'enr-001',
-    courseId: 'c1',
-    title: 'Interventional Cardiology Fellowship',
-    category: 'Cardiology',
-    instructor: 'Course Instructor',
-    enrolledAt: '2024-03-01',
-    lastAccessed: '2024-03-14',
-    progress: 68,
-    status: 'ACTIVE',
-    credentialIssued: false,
-    credentialId: null,
-    modules: [
-      {
-        id: 'm1', title: 'Module 1: PCI Fundamentals', isLocked: false,
-        lessons: [
-          { id: 'l1', title: 'Introduction to PCI',            type: 'VIDEO',       order: 1, isLocked: false, duration: '18 min', completedAt: '2024-03-02' },
-          { id: 'l2', title: 'Coronary Anatomy',               type: 'VIDEO',       order: 2, isLocked: false, duration: '24 min', completedAt: '2024-03-03' },
-          { id: 'l3', title: 'Case Study: STEMI Management',   type: 'INTERACTIVE', order: 3, isLocked: false, duration: '35 min', completedAt: '2024-03-05' },
-          { id: 'l4', title: 'Module 1 Assessment',            type: 'QUIZ',        order: 4, isLocked: false, duration: '20 min', completedAt: '2024-03-06' },
-        ],
-      },
-      {
-        id: 'm2', title: 'Module 2: Advanced Techniques', isLocked: false,
-        lessons: [
-          { id: 'l5', title: 'Complex PCI Cases',              type: 'VIDEO',       order: 1, isLocked: false, duration: '42 min', completedAt: '2024-03-08' },
-          { id: 'l6', title: 'Bifurcation Stenting',           type: 'VIDEO',       order: 2, isLocked: false, duration: '38 min' },
-          { id: 'l7', title: 'Hands-on Simulation',            type: 'INTERACTIVE', order: 3, isLocked: true,  duration: '60 min' },
-        ],
-      },
-      {
-        id: 'm3', title: 'Module 3: Complications & Recovery', isLocked: true,
-        lessons: [
-          { id: 'l8',  title: 'Managing Complications',        type: 'VIDEO',       order: 1, isLocked: true,  duration: '50 min' },
-          { id: 'l9',  title: 'Post-procedure Care',           type: 'TEXT',        order: 2, isLocked: true,  duration: '15 min' },
-          { id: 'l10', title: 'Certification Exam',            type: 'QUIZ',        order: 3, isLocked: true,  duration: '90 min' },
-        ],
-      },
-    ],
-  },
-  {
-    enrollmentId: 'enr-007',
-    courseId: 'c4',
-    title: 'Advanced Cardiac Imaging',
-    category: 'Cardiology',
-    instructor: 'Dr. Kevin Park',
-    enrolledAt: '2024-01-10',
-    lastAccessed: '2024-03-01',
-    progress: 100,
-    status: 'ACTIVE',
-    credentialIssued: true,
-    credentialId: 'MF-CERT-PS-2024-001',
-    modules: [
-      {
-        id: 'm4', title: 'Module 1: Echo Fundamentals', isLocked: false,
-        lessons: [
-          { id: 'l11', title: 'Intro to Echocardiography',     type: 'VIDEO', order: 1, isLocked: false, duration: '20 min', completedAt: '2024-01-12' },
-          { id: 'l12', title: 'Image Acquisition',             type: 'VIDEO', order: 2, isLocked: false, duration: '30 min', completedAt: '2024-01-14' },
-          { id: 'l13', title: 'Final Assessment',              type: 'QUIZ',  order: 3, isLocked: false, duration: '25 min', completedAt: '2024-02-28' },
-        ],
-      },
-    ],
-  },
-];
+const mockCourses: EnrolledCourse[] = [];
 
 /* ─── Helpers ─── */
 const statusConfig: Record<AccessStatus, { label: string; bg: string; text: string; dot: string }> = {

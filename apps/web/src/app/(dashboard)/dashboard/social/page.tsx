@@ -42,147 +42,17 @@ import {
   Activity,
 } from 'lucide-react';
 
-// Feed posts
-const feedPosts = [
-  {
-    id: 1,
-    author: {
-      name: 'User Name',
-      title: 'Interventional Cardiology Fellow',
-      institution: 'Cleveland Clinic',
-      avatar: '👩‍⚕️',
-      verified: true,
-      followers: 12500,
-    },
-    type: 'video',
-    content: 'Just completed a complex CTO case using the retrograde approach! Here\'s a 60-second breakdown of the key wire escalation strategy 🔥',
-    media: '/placeholder-video.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600',
-    duration: '0:58',
-    views: 24500,
-    likes: 1892,
-    comments: 156,
-    shares: 423,
-    saves: 892,
-    tags: ['CTO', 'Interventional', 'WireEscalation', 'ProTip'],
-    timestamp: '2h ago',
-    liked: false,
-    saved: false,
-  },
-  {
-    id: 2,
-    author: {
-      name: 'User Name',
-      title: 'Structural Heart Attending',
-      institution: 'Cedars-Sinai',
-      avatar: '👨‍⚕️',
-      verified: true,
-      followers: 28900,
-    },
-    type: 'image',
-    content: 'Beautiful echo demonstrating severe MR before and after MitraClip. Notice the complete elimination of the jet! Patient walking next day. 💪',
-    media: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600',
-    thumbnail: '',
-    duration: '',
-    views: 18200,
-    likes: 2341,
-    comments: 89,
-    shares: 312,
-    saves: 567,
-    tags: ['MitraClip', 'Structural', 'Echo', 'CaseStudy'],
-    timestamp: '5h ago',
-    liked: true,
-    saved: true,
-  },
-  {
-    id: 3,
-    author: {
-      name: 'MedFellow Academy',
-      title: 'Official Channel',
-      institution: 'MedFellow',
-      avatar: '🏥',
-      verified: true,
-      followers: 156000,
-    },
-    type: 'poll',
-    content: '🗳️ Quick Poll: What\'s your preferred hemodynamic support for high-risk PCI?',
-    media: '',
-    thumbnail: '',
-    duration: '',
-    views: 0,
-    options: [
-      { text: 'Impella CP', votes: 45 },
-      { text: 'IABP', votes: 28 },
-      { text: 'ECMO', votes: 15 },
-      { text: 'None/Meds only', votes: 12 },
-    ],
-    totalVotes: 4521,
-    likes: 567,
-    comments: 234,
-    shares: 89,
-    saves: 456,
-    tags: ['Poll', 'HemodynamicSupport', 'HighRiskPCI'],
-    timestamp: '8h ago',
-    liked: false,
-    saved: false,
-    voted: 'Impella CP',
-  },
-];
+// Feed posts will be loaded from the database
+const feedPosts: any[] = [];
 
-// Trending topics
-const trendingTopics = [
-  { tag: 'AICardiology', posts: 2450, trending: '+45%' },
-  { tag: 'TAVR2024', posts: 1890, trending: '+32%' },
-  { tag: 'ComplexPCI', posts: 1560, trending: '+28%' },
-  { tag: 'FellowLife', posts: 1230, trending: '+22%' },
-  { tag: 'MedicalAI', posts: 980, trending: '+18%' },
-];
+// Trending topics will be loaded from the database
+const trendingTopics: any[] = [];
 
-// Suggested connections
-const suggestedConnections = [
-  {
-    name: 'User Name',
-    title: 'EP Fellow',
-    institution: 'Duke',
-    avatar: '👩‍🔬',
-    mutualConnections: 24,
-    verified: true,
-  },
-  {
-    name: 'Dr. David Lee',
-    title: 'IC Attending',
-    institution: 'Stanford',
-    avatar: '👨‍🔬',
-    mutualConnections: 18,
-    verified: true,
-  },
-  {
-    name: 'Dr. Maria Garcia',
-    title: 'Research Fellow',
-    institution: 'Mayo',
-    avatar: '👩‍⚕️',
-    mutualConnections: 12,
-    verified: false,
-  },
-];
+// Suggested connections will be loaded from the database
+const suggestedConnections: any[] = [];
 
-// Live streams
-const liveStreams = [
-  {
-    id: 1,
-    title: 'Live CTO Case - LAD',
-    host: 'Dr. Chen',
-    viewers: 1245,
-    thumbnail: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=400',
-  },
-  {
-    id: 2,
-    title: 'TAVR Q&A Session',
-    host: 'Dr. Miller',
-    viewers: 892,
-    thumbnail: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400',
-  },
-];
+// Live streams will be loaded from the database
+const liveStreams: any[] = [];
 
 export default function SocialPage() {
   const [activeTab, setActiveTab] = useState<'feed' | 'discover' | 'live' | 'groups'>('feed');

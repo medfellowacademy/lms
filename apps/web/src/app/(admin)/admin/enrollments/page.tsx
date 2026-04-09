@@ -82,82 +82,10 @@ interface Enrollment {
   modules: ModuleLock[];
 }
 
-/* ─── Mock data ─── */
-const mockModules = (courseTitle: string): ModuleLock[] => [
-  {
-    id: 'm1',
-    title: 'Module 1: Fundamentals',
-    lessons: [
-      { id: 'l1', title: 'Introduction & Overview',         type: 'VIDEO',       order: 1, isLocked: false, duration: '18 min' },
-      { id: 'l2', title: 'Core Anatomy Review',             type: 'VIDEO',       order: 2, isLocked: false, duration: '24 min' },
-      { id: 'l3', title: 'Case Study: Basic Assessment',    type: 'INTERACTIVE', order: 3, isLocked: false, duration: '35 min' },
-      { id: 'l4', title: 'Module 1 Assessment',             type: 'QUIZ',        order: 4, isLocked: false, duration: '20 min' },
-    ],
-  },
-  {
-    id: 'm2',
-    title: 'Module 2: Intermediate Techniques',
-    lessons: [
-      { id: 'l5', title: 'Advanced Procedural Skills',      type: 'VIDEO',       order: 1, isLocked: true,  duration: '42 min' },
-      { id: 'l6', title: 'Hemodynamic Interpretation',      type: 'VIDEO',       order: 2, isLocked: true,  duration: '38 min' },
-      { id: 'l7', title: 'Hands-on Lab Simulation',         type: 'INTERACTIVE', order: 3, isLocked: true,  duration: '60 min' },
-    ],
-  },
-  {
-    id: 'm3',
-    title: 'Module 3: Advanced Practice',
-    lessons: [
-      { id: 'l8',  title: 'Complex Case Management',        type: 'VIDEO',       order: 1, isLocked: true,  duration: '50 min' },
-      { id: 'l9',  title: 'Certification Prep Exam',        type: 'QUIZ',        order: 2, isLocked: true,  duration: '90 min' },
-      { id: 'l10', title: 'Live Session Recording',         type: 'VIDEO',       order: 3, isLocked: true,  duration: '75 min' },
-    ],
-  },
-];
+/* ─── Enrollment data will be loaded from database ─── */
+const mockModules = (courseTitle: string): ModuleLock[] => [];
 
-const mockEnrollments: Enrollment[] = [
-  {
-    id: 'enr-001',
-    doctor: { id: 'u1', name: 'User Name',    email: 'priya.sharma@hospital.in',   avatar: 'PS', specialty: 'Interventional Cardiology', institution: 'AIIMS Delhi',         isVerified: true  },
-    course:  { id: 'c1', title: 'Interventional Cardiology Fellowship', category: 'Cardiology',   modules: 3, lessons: 10 },
-    enrolledAt: '2024-03-01', lastAccessed: '2024-03-14', progress: 68, status: 'ACTIVE',    paymentStatus: 'COMPLETED', paidAmount: 2999, credentialIssued: false, credentialId: null,
-    modules: mockModules('Cardiology'),
-  },
-  {
-    id: 'enr-002',
-    doctor: { id: 'u2', name: 'Dr. James Mitchell',  email: 'j.mitchell@stanford.edu',    avatar: 'JM', specialty: 'Neurosurgery',              institution: 'Stanford Medical',    isVerified: true  },
-    course:  { id: 'c2', title: 'Neurosurgical Oncology',                category: 'Neurology',    modules: 3, lessons: 10 },
-    enrolledAt: '2024-02-15', lastAccessed: '2024-03-13', progress: 32, status: 'ACTIVE',    paymentStatus: 'COMPLETED', paidAmount: 3999, credentialIssued: false, credentialId: null,
-    modules: mockModules('Neurology'),
-  },
-  {
-    id: 'enr-003',
-    doctor: { id: 'u3', name: 'Dr. Aisha Karimi',    email: 'a.karimi@aga-khan.pk',       avatar: 'AK', specialty: 'Emergency Medicine',         institution: 'Aga Khan University', isVerified: false },
-    course:  { id: 'c6', title: 'Emergency Medicine Leadership',         category: 'Emergency',    modules: 3, lessons: 10 },
-    enrolledAt: '2024-03-10', lastAccessed: '2024-03-10', progress: 5,  status: 'PENDING',   paymentStatus: 'PENDING',   paidAmount: 1999, credentialIssued: false, credentialId: null,
-    modules: mockModules('Emergency'),
-  },
-  {
-    id: 'enr-004',
-    doctor: { id: 'u4', name: 'Dr. Riku Yamamoto',   email: 'riku.y@keio.ac.jp',          avatar: 'RY', specialty: 'Pediatric Surgery',          institution: 'Keio University',     isVerified: true  },
-    course:  { id: 'c5', title: 'Pediatric Critical Care',               category: 'Pediatrics',   modules: 3, lessons: 10 },
-    enrolledAt: '2024-01-20', lastAccessed: '2024-03-01', progress: 100, status: 'ACTIVE',   paymentStatus: 'COMPLETED', paidAmount: 2799, credentialIssued: true,  credentialId: 'MF-CERT-RY-2024',
-    modules: mockModules('Pediatrics'),
-  },
-  {
-    id: 'enr-005',
-    doctor: { id: 'u5', name: 'User Name',  email: 'e.kowalski@uw.edu.pl',       avatar: 'EK', specialty: 'Orthopedic Surgery',         institution: 'Warsaw University',   isVerified: true  },
-    course:  { id: 'c3', title: 'Sports Medicine & Arthroscopy',         category: 'Orthopedics',  modules: 3, lessons: 10 },
-    enrolledAt: '2024-02-01', lastAccessed: '2024-03-12', progress: 45, status: 'PAUSED',    paymentStatus: 'COMPLETED', paidAmount: 2499, credentialIssued: false, credentialId: null,
-    modules: mockModules('Orthopedics'),
-  },
-  {
-    id: 'enr-006',
-    doctor: { id: 'u6', name: 'Dr. Marcus Johnson',  email: 'm.johnson@clevelandclinic.org', avatar: 'MJ', specialty: 'Cardiovascular Surgery', institution: 'Cleveland Clinic',    isVerified: true  },
-    course:  { id: 'c1', title: 'Interventional Cardiology Fellowship', category: 'Cardiology',   modules: 3, lessons: 10 },
-    enrolledAt: '2024-01-10', lastAccessed: '2024-03-14', progress: 89, status: 'ACTIVE',    paymentStatus: 'COMPLETED', paidAmount: 2999, credentialIssued: false, credentialId: null,
-    modules: mockModules('Cardiology'),
-  },
-];
+const mockEnrollments: Enrollment[] = [];
 
 /* ─── Helpers ─── */
 const statusConfig: Record<AccessStatus, { label: string; bg: string; text: string; dot: string }> = {

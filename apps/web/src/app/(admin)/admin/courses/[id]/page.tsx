@@ -32,6 +32,9 @@ import {
   Layers,
   Brain,
   Zap,
+  Lock,
+  Unlock,
+  FilePresentation,
 } from 'lucide-react';
 
 // Types
@@ -50,6 +53,8 @@ interface Lesson {
   duration: number;
   videoUrl?: string;
   content?: string;
+  presentationUrl?: string;
+  isLocked: boolean;
   order: number;
   xpReward: number;
   resources: Resource[];
@@ -60,6 +65,7 @@ interface Module {
   title: string;
   description: string;
   order: number;
+  isLocked: boolean;
   lessons: Lesson[];
   isExpanded?: boolean;
 }
@@ -114,6 +120,7 @@ export default function CourseEditorPage() {
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [isUploadingPresentation, setIsUploadingPresentation] = useState(false);
 
   // Form states
   const [newModuleTitle, setNewModuleTitle] = useState('');
@@ -126,6 +133,8 @@ export default function CourseEditorPage() {
     xpReward: 10,
     videoUrl: '',
     content: '',
+    presentationUrl: '',
+    isLocked: false,
     resources: [],
   });
 
@@ -199,6 +208,7 @@ export default function CourseEditorPage() {
       title: newModuleTitle,
       description: newModuleDescription,
       order: course.modules.length,
+      isLocked: false,
       lessons: [],
       isExpanded: true,
     };
@@ -246,6 +256,8 @@ export default function CourseEditorPage() {
       xpReward: newLessonData.xpReward || 10,
       videoUrl: newLessonData.videoUrl,
       content: newLessonData.content,
+      presentationUrl: newLessonData.presentationUrl,
+      isLocked: newLessonData.isLocked || false,
       order: course.modules.find((m) => m.id === selectedModuleId)?.lessons.length || 0,
       resources: [],
     };
@@ -267,6 +279,8 @@ export default function CourseEditorPage() {
       xpReward: 10,
       videoUrl: '',
       content: '',
+      presentationUrl: '',
+      isLocked: false,
       resources: [],
     });
     setShowAddLessonModal(false);
@@ -309,6 +323,144 @@ export default function CourseEditorPage() {
       ),
     }));
     setHasChanges(true);
+  };
+
+  // Toggle lesson lock
+  const handleToggleLessonLock = async (lessonId: string) => {
+    if (lessonId.startsWith('lesson-')) {
+      // Local toggle for new lessons not yet saved
+      setCourse((prev) => ({
+        ...prev,
+        modules: prev.modules.map((m) => ({
+          ...m,
+          lessons: m.lessons.map((l) =>
+            l.id === lessonId ? { ...l, isLocked: !l.isLocked } : l
+          ),
+        })),
+      }));
+      setHasChanges(true);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/lessons/${lessonId}/lock`, {
+        method: 'PATCH',
+      });
+
+      if (!res.ok) throw new Error('Failed to toggle lock');
+
+      const data = await res.json();
+      
+      // Update local state
+      setCourse((prev) => ({
+        ...prev,
+        modules: prev.modules.map((m) => ({
+          ...m,
+          lessons: m.lessons.map((l) =>
+            l.id === lessonId ? { ...l, isLocked: data.data.isLocked } : l
+          ),
+        })),
+      }));
+
+      showNotification('success', `Lesson ${data.data.isLocked ? 'locked' : 'unlocked'} successfully!`);
+    } catch (error) {
+      showNotification('error', 'Failed to toggle lesson lock');
+    }
+  };
+
+  // Toggle module lock
+  const handleToggleModuleLock = async (moduleId: string) => {
+    if (moduleId.startsWith('module-')) {
+      // Local toggle for new modules not yet saved
+      setCourse((prev) => ({
+        ...prev,
+        modules: prev.modules.map((m) =>
+          m.id === moduleId
+            ? { ...m, isLocked: !m.isLocked, lessons: m.lessons.map(l => ({ ...l, isLocked: !m.isLocked })) }
+            : m
+        ),
+      }));
+      setHasChanges(true);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/modules/${moduleId}/lock`, {
+        method: 'PATCH',
+      });
+
+      if (!res.ok) throw new Error('Failed to toggle lock');
+
+      const data = await res.json();
+      
+      // Update local state
+      setCourse((prev) => ({
+        ...prev,
+        modules: prev.modules.map((m) =>
+          m.id === moduleId
+            ? { ...m, isLocked: data.data.isLocked, lessons: m.lessons.map(l => ({ ...l, isLocked: data.data.isLocked })) }
+            : m
+        ),
+      }));
+
+      showNotification('success', `Module ${data.data.isLocked ? 'locked' : 'unlocked'} successfully!`);
+    } catch (error) {
+      showNotification('error', 'Failed to toggle module lock');
+    }
+  };
+
+  // Handle presentation file upload
+  const handlePresentationUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    ];
+    
+    if (!allowedTypes.includes(file.type)) {
+      showNotification('error', 'Invalid file type. Please upload PPT, PPTX, or PDF files.');
+      return;
+    }
+
+    // Validate file size (50MB max)
+    if (file.size > 50 * 1024 * 1024) {
+      showNotification('error', 'File too large. Maximum size is 50MB.');
+      return;
+    }
+
+    setIsUploadingPresentation(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('lessonId', selectedLesson?.id || 'temp');
+
+      const res = await fetch('/api/upload/presentation', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('Upload failed');
+
+      const data = await res.json();
+      
+      if (data.success) {
+        setNewLessonData((prev) => ({ ...prev, presentationUrl: data.data.url }));
+        showNotification('success', 'Presentation uploaded successfully!');
+      } else {
+        throw new Error(data.error || 'Upload failed');
+      }
+    } catch (error: any) {
+      showNotification('error', error.message || 'Failed to upload presentation');
+    } finally {
+      setIsUploadingPresentation(false);
+      // Reset file input
+      event.target.value = '';
+    }
   };
 
   // Save course
@@ -362,6 +514,7 @@ export default function CourseEditorPage() {
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const presentationInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -528,13 +681,32 @@ export default function CourseEditorPage() {
                           )}
                         </button>
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-900">
-                            Module {moduleIndex + 1}: {module.title}
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-gray-900">
+                              Module {moduleIndex + 1}: {module.title}
+                            </span>
+                            {module.isLocked && (
+                              <span className="flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
+                                <Lock className="w-3 h-3" />
+                                Locked
+                              </span>
+                            )}
                           </div>
                           <div className="text-sm text-gray-500">
                             {module.lessons.length} lessons • {formatDuration(module.lessons.reduce((sum, l) => sum + l.duration, 0))}
                           </div>
                         </div>
+                        <button
+                          onClick={() => handleToggleModuleLock(module.id)}
+                          className={`p-2 rounded-lg transition-colors ${
+                            module.isLocked
+                              ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                              : 'bg-green-100 text-green-600 hover:bg-green-200'
+                          }`}
+                          title={module.isLocked ? 'Unlock module' : 'Lock module'}
+                        >
+                          {module.isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                        </button>
                         <button
                           onClick={() => {
                             setSelectedModuleId(module.id);
@@ -588,8 +760,20 @@ export default function CourseEditorPage() {
                                         {lessonType && <lessonType.icon className={`w-4 h-4 text-${lessonType.color}-600`} />}
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <div className="font-medium text-gray-900 truncate">
-                                          {moduleIndex + 1}.{lessonIndex + 1} {lesson.title}
+                                        <div className="flex items-center gap-2">
+                                          <span className="font-medium text-gray-900 truncate">
+                                            {moduleIndex + 1}.{lessonIndex + 1} {lesson.title}
+                                          </span>
+                                          {lesson.isLocked && (
+                                            <span className="flex items-center gap-1 px-1.5 py-0.5 bg-red-100 text-red-700 text-xs rounded">
+                                              <Lock className="w-3 h-3" />
+                                            </span>
+                                          )}
+                                          {lesson.presentationUrl && (
+                                            <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded" title="Has presentation">
+                                              <FilePresentation className="w-3 h-3" />
+                                            </span>
+                                          )}
                                         </div>
                                         <div className="text-sm text-gray-500 flex items-center gap-2">
                                           <span>{lessonType?.label}</span>
@@ -600,6 +784,17 @@ export default function CourseEditorPage() {
                                         </div>
                                       </div>
                                       <div className="flex items-center gap-1">
+                                        <button
+                                          onClick={() => handleToggleLessonLock(lesson.id)}
+                                          className={`p-2 rounded-lg transition-colors ${
+                                            lesson.isLocked
+                                              ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                                              : 'bg-green-50 text-green-600 hover:bg-green-100'
+                                          }`}
+                                          title={lesson.isLocked ? 'Unlock lesson' : 'Lock lesson'}
+                                        >
+                                          {lesson.isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                                        </button>
                                         <button
                                           onClick={() => {
                                             setSelectedLesson(lesson);
@@ -1077,6 +1272,57 @@ export default function CourseEditorPage() {
                   </div>
                 )}
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Presentation URL (PPT/PDF)
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newLessonData.presentationUrl || ''}
+                      onChange={(e) => setNewLessonData((prev) => ({ ...prev, presentationUrl: e.target.value }))}
+                      placeholder="https://... or upload PPT/PDF"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => presentationInputRef.current?.click()}
+                      disabled={isUploadingPresentation}
+                      className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Upload presentation"
+                    >
+                      {isUploadingPresentation ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
+                    </button>
+                    <input
+                      ref={presentationInputRef}
+                      type="file"
+                      accept=".pdf,.ppt,.pptx"
+                      onChange={handlePresentationUpload}
+                      className="hidden"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Upload PowerPoint (.ppt, .pptx) or PDF presentation for this lesson (Max: 50MB)
+                  </p>
+                  {newLessonData.presentationUrl && (
+                    <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Presentation uploaded
+                      <button
+                        type="button"
+                        onClick={() => setNewLessonData((prev) => ({ ...prev, presentationUrl: '' }))}
+                        className="text-red-600 hover:underline"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1102,6 +1348,20 @@ export default function CourseEditorPage() {
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg"
                     />
                   </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <input
+                    type="checkbox"
+                    id="lessonLocked"
+                    checked={newLessonData.isLocked || false}
+                    onChange={(e) => setNewLessonData((prev) => ({ ...prev, isLocked: e.target.checked }))}
+                    className="rounded"
+                  />
+                  <label htmlFor="lessonLocked" className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    {newLessonData.isLocked ? <Lock className="w-4 h-4 text-red-600" /> : <Unlock className="w-4 h-4 text-green-600" />}
+                    Lock this lesson (students cannot access)
+                  </label>
                 </div>
               </div>
 

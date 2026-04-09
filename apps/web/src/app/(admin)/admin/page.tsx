@@ -37,42 +37,16 @@ const fallbackStats = {
   revenue: { total: 345670, today: 12450, thisMonth: 89500, growth: '+23.4%' },
 };
 
-const fallbackActivity = [
-  { id: 1, type: 'enrollment', user: 'User Name', action: 'enrolled in', target: 'Interventional Cardiology', time: '2s ago' },
-  { id: 2, type: 'completion', user: 'User Name', action: 'completed', target: 'PCI Fundamentals Module', time: '15s ago' },
-  { id: 3, type: 'certificate', user: 'Dr. Elena K.', action: 'earned certificate', target: 'Cardiac Imaging', time: '32s ago' },
-  { id: 4, type: 'lesson', user: 'Dr. Priya S.', action: 'started lesson', target: 'ECG Interpretation', time: '45s ago' },
-  { id: 5, type: 'quiz', user: 'Dr. Marcus J.', action: 'completed quiz', target: 'Hemodynamics Assessment', time: '1m ago' },
-  { id: 6, type: 'achievement', user: 'Dr. Kim L.', action: 'unlocked', target: '7-Day Streak', time: '2m ago' },
-];
+const fallbackActivity: any[] = [];
 
-// System health
-const systemHealth = [
-  { name: 'API Server', status: 'healthy', uptime: '99.99%', latency: '45ms' },
-  { name: 'Database', status: 'healthy', uptime: '99.95%', latency: '12ms' },
-  { name: 'CDN', status: 'healthy', uptime: '100%', latency: '8ms' },
-  { name: 'AI Service', status: 'healthy', uptime: '99.90%', latency: '120ms' },
-  { name: 'Video Streaming', status: 'warning', uptime: '99.80%', latency: '250ms' },
-  { name: 'Search Index', status: 'healthy', uptime: '99.99%', latency: '35ms' },
-];
+// System health will be loaded from API
+const systemHealth: any[] = [];
 
-// Top courses
-const topCourses = [
-  { name: 'Interventional Cardiology', enrollments: 2847, completionRate: 78, revenue: '$85,410' },
-  { name: 'Cardiac Imaging', enrollments: 2156, completionRate: 82, revenue: '$64,680' },
-  { name: 'Electrophysiology', enrollments: 1890, completionRate: 75, revenue: '$56,700' },
-  { name: 'Heart Failure', enrollments: 1654, completionRate: 80, revenue: '$49,620' },
-  { name: 'Structural Heart', enrollments: 1432, completionRate: 72, revenue: '$42,960' },
-];
+// Top courses will be loaded from database
+const topCourses: any[] = [];
 
-// Geographic distribution
-const geoDistribution = [
-  { region: 'North America', users: 8450, percentage: 30 },
-  { region: 'Europe', users: 7890, percentage: 28 },
-  { region: 'Asia Pacific', users: 6780, percentage: 24 },
-  { region: 'Middle East', users: 2840, percentage: 10 },
-  { region: 'Others', users: 2490, percentage: 8 },
-];
+// Geographic distribution will be loaded from database
+const geoDistribution: any[] = [];
 
 export default function AdminDashboard() {
   const [lastUpdate, setLastUpdate] = useState(new Date());

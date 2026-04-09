@@ -49,6 +49,7 @@ export async function GET(
     // Check if user is enrolled
     let enrollment = null;
     let progress: Record<string, unknown>[] = [];
+    const isAdmin = sessionUser?.role && ['ADMIN', 'SUPER_ADMIN', 'INSTRUCTOR'].includes(sessionUser.role);
 
     if (sessionUser?.dbUser) {
       enrollment = await db.enrollment.findUnique({
@@ -72,10 +73,35 @@ export async function GET(
       }
     }
 
+    // Filter locked content for non-admin users
+    let filteredCourse = course;
+    if (!isAdmin) {
+      filteredCourse = {
+        ...course,
+        modules: (course as any)?.modules?.map((module: any) => {
+          // If module is locked, hide all lessons
+          if (module.isLocked) {
+            return {
+              ...module,
+              lessons: [],
+              isLocked: true,
+            };
+          }
+
+          // Filter out locked lessons
+          return {
+            ...module,
+            lessons: module.lessons?.filter((lesson: any) => !lesson.isLocked && lesson.isPublished),
+          };
+        }),
+      };
+    }
+
     return NextResponse.json({
-      course,
+      course: filteredCourse,
       enrollment,
       progress,
+      isEnrolled: !!enrollment,
     });
   } catch (error) {
     console.error('Error fetching course:', error);

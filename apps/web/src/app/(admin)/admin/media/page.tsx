@@ -66,49 +66,8 @@ export default function MediaLibraryPage() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock data for demo (in production, fetch from API)
-  const [files, setFiles] = useState<MediaFile[]>([
-    {
-      id: '1',
-      name: 'interventional-cardiology-intro.mp4',
-      url: 'https://example.com/video1.mp4',
-      path: 'videos/1234-intro.mp4',
-      type: 'video',
-      size: 125000000,
-      duration: 1245,
-      thumbnail: '/api/placeholder/320/180',
-      uploadedAt: new Date('2024-01-15'),
-    },
-    {
-      id: '2',
-      name: 'pci-technique-demonstration.mp4',
-      url: 'https://example.com/video2.mp4',
-      path: 'videos/1235-pci.mp4',
-      type: 'video',
-      size: 250000000,
-      duration: 2456,
-      thumbnail: '/api/placeholder/320/180',
-      uploadedAt: new Date('2024-01-14'),
-    },
-    {
-      id: '3',
-      name: 'cardiac-anatomy-diagram.png',
-      url: 'https://example.com/image1.png',
-      path: 'images/anatomy.png',
-      type: 'image',
-      size: 2500000,
-      uploadedAt: new Date('2024-01-13'),
-    },
-    {
-      id: '4',
-      name: 'course-syllabus.pdf',
-      url: 'https://example.com/doc1.pdf',
-      path: 'documents/syllabus.pdf',
-      type: 'document',
-      size: 1500000,
-      uploadedAt: new Date('2024-01-12'),
-    },
-  ]);
+  // Media files will be loaded from the database/storage
+  const [files, setFiles] = useState<MediaFile[]>([]);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });

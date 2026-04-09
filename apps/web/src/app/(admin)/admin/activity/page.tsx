@@ -45,38 +45,20 @@ const activityTypes = {
   share: { icon: Share2, color: 'text-teal-400', bg: 'bg-teal-500/20', label: 'Share' },
 };
 
-// Generate mock activities
+// Activities will be loaded from database
 const generateActivity = (id: number) => {
-  const types = Object.keys(activityTypes) as Array<keyof typeof activityTypes>;
-  const type = types[Math.floor(Math.random() * types.length)];
-  const users = [
-    'User Name', 'User Name', 'Dr. Elena K.', 'User Name',
-    'Dr. Marcus J.', 'Dr. Yuki Tanaka', 'Dr. Ahmed Hassan', 'Dr. Maria Garcia',
-  ];
-  const courses = [
-    'Interventional Cardiology', 'Cardiac Imaging', 'Electrophysiology',
-    'Heart Failure', 'Structural Heart', 'PCI Fundamentals',
-  ];
-  const countries = ['USA', 'Germany', 'India', 'Japan', 'UK', 'Canada', 'Australia'];
-
   return {
     id,
-    type,
-    user: users[Math.floor(Math.random() * users.length)],
-    details: type === 'enrollment' ? `Enrolled in ${courses[Math.floor(Math.random() * courses.length)]}` :
-             type === 'lesson_complete' ? `Completed lesson in ${courses[Math.floor(Math.random() * courses.length)]}` :
-             type === 'ai_chat' ? 'Started conversation with Dr. Nexus' :
-             type === 'vr_session' ? 'Entered VR Surgery Lab' :
-             type === 'achievement' ? 'Unlocked "7-Day Streak" achievement' :
-             type === 'certificate' ? 'Earned certificate in Cardiology' :
-             `${type.replace('_', ' ')} activity`,
-    country: countries[Math.floor(Math.random() * countries.length)],
-    timestamp: new Date(Date.now() - Math.random() * 60000),
+    type: 'enrollment' as any,
+    user: '',
+    details: '',
+    country: '',
+    timestamp: new Date(),
   };
 };
 
 // Initial activities
-const initialActivities = Array.from({ length: 20 }, (_, i) => generateActivity(i));
+const initialActivities: any[] = [];
 
 export default function ActivityPage() {
   const [activities, setActivities] = useState(initialActivities);

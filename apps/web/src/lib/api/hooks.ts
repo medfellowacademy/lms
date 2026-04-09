@@ -15,6 +15,7 @@ import type {
 export const queryKeys = {
   user: ['user'] as const,
   courses: (params?: CourseListParams) => ['courses', params] as const,
+  enrolledCourses: (params?: CourseListParams) => ['courses', 'enrolled', params] as const,
   course: (id: string) => ['course', id] as const,
   progress: ['progress'] as const,
   achievements: ['achievements'] as const,
@@ -56,6 +57,19 @@ export function useCourses(params?: CourseListParams) {
   });
 }
 
+export function useEnrolledCourses(params?: CourseListParams) {
+  return useQuery({
+    queryKey: queryKeys.enrolledCourses(params),
+    queryFn: async () => {
+      const response = await fetch('/api/courses/enrolled?' + new URLSearchParams(params as any));
+      if (!response.ok) throw new Error('Failed to fetch enrolled courses');
+      const data = await response.json();
+      return data.data;
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+}
+
 export function useCourse(id: string) {
   return useQuery({
     queryKey: queryKeys.course(id),
@@ -71,6 +85,7 @@ export function useEnrollCourse() {
     mutationFn: (courseId: string) => api.courses.enroll(courseId),
     onSuccess: (_, courseId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.course(courseId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.enrolledCourses() });
       queryClient.invalidateQueries({ queryKey: queryKeys.progress });
       queryClient.invalidateQueries({ queryKey: queryKeys.user });
     },
@@ -84,6 +99,7 @@ export function useUnenrollCourse() {
     mutationFn: (courseId: string) => api.courses.unenroll(courseId),
     onSuccess: (_, courseId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.course(courseId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.enrolledCourses() });
       queryClient.invalidateQueries({ queryKey: queryKeys.progress });
     },
   });
