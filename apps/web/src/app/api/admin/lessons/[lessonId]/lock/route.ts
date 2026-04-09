@@ -7,10 +7,10 @@ import { db } from '@/lib/db';
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { lessonId: string } }
+  { params }: { params: Promise<{ lessonId: string }> }
 ) {
   try {
-    const { lessonId } = params;
+    const { lessonId } = await params;
     const body = await req.json();
     const { isLocked, reason } = body;
 
@@ -76,10 +76,10 @@ export async function PATCH(
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { lessonId: string } }
+  { params }: { params: Promise<{ lessonId: string }> }
 ) {
   try {
-    const { lessonId } = params;
+    const { lessonId } = await params;
 
     // Get lesson with lock status
     const lesson = await db.lesson.findUnique({

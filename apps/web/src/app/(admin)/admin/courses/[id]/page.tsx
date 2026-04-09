@@ -34,7 +34,7 @@ import {
   Zap,
   Lock,
   Unlock,
-  FilePresentation,
+  Presentation,
 } from 'lucide-react';
 
 // Types
@@ -771,7 +771,7 @@ export default function CourseEditorPage() {
                                           )}
                                           {lesson.presentationUrl && (
                                             <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 text-xs rounded" title="Has presentation">
-                                              <FilePresentation className="w-3 h-3" />
+                                              <Presentation className="w-3 h-3" />
                                             </span>
                                           )}
                                         </div>

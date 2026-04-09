@@ -7,10 +7,10 @@ import { db } from '@/lib/db';
  */
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { moduleId: string } }
+  { params }: { params: Promise<{ moduleId: string }> }
 ) {
   try {
-    const { moduleId } = params;
+    const { moduleId } = await params;
     const body = await req.json();
     const { isLocked, reason } = body;
 
@@ -85,10 +85,10 @@ export async function PATCH(
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { moduleId: string } }
+  { params }: { params: Promise<{ moduleId: string }> }
 ) {
   try {
-    const { moduleId } = params;
+    const { moduleId } = await params;
 
     const module = await db.module.findUnique({
       where: { id: moduleId },
