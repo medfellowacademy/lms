@@ -209,6 +209,7 @@ export const db = {
   enrollment: createModel('Enrollment', createDbClient),
   lessonProgress: createModel('LessonProgress', createDbClient),
   lessonLock: createModel('LessonLock', createDbClient),
+  lessonLockHistory: createModel('LessonLockHistory', createDbClient),
   certificate: createModel('Certificate', createDbClient),
   achievement: createModel('Achievement', createDbClient),
   userAchievement: createModel('UserAchievement', createDbClient),

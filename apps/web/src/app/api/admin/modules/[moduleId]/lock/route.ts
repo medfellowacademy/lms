@@ -43,18 +43,20 @@ export async function PATCH(
     });
 
     // Log lock action for each lesson
-    const lockHistoryEntries = module.lessons.map((lesson) => ({
+    const lockHistoryEntries = module.lessons.map((lesson: any) => ({
       lessonId: lesson.id,
       userId,
       action: isLocked ? 'LOCKED' : 'UNLOCKED',
       reason: reason || `Module ${isLocked ? 'locked' : 'unlocked'} by admin`,
     }));
 
-    await db.lessonLockHistory.createMany({
-      data: lockHistoryEntries,
-    }).catch(() => {
+    try {
+      await db.lessonLockHistory.createMany({
+        data: lockHistoryEntries,
+      });
+    } catch (historyError) {
       console.log('LessonLockHistory table not found, skipping audit log');
-    });
+    }
 
     return NextResponse.json({
       success: true,
@@ -105,7 +107,7 @@ export async function GET(
           orderBy: { order: 'asc' },
         },
       },
-    });
+    }) as any;
 
     if (!module) {
       return NextResponse.json(
@@ -114,7 +116,7 @@ export async function GET(
       );
     }
 
-    const lockedCount = module.lessons.filter((l) => l.isLocked).length;
+    const lockedCount = module.lessons.filter((l: any) => l.isLocked).length;
     const unlockedCount = module.lessons.length - lockedCount;
 
     return NextResponse.json({

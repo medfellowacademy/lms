@@ -208,7 +208,7 @@ export default function SocialPage() {
                 <div className="px-4 pb-3">
                   <p className="text-sm mb-2">{post.content}</p>
                   <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
+                    {post.tags.map((tag: string) => (
                       <span key={tag} className="text-sm text-ibmp-500 hover:underline cursor-pointer">
                         #{tag}
                       </span>
@@ -249,7 +249,7 @@ export default function SocialPage() {
 
                 {post.type === 'poll' && (
                   <div className="px-4 py-2 space-y-2">
-                    {post.options?.map((option, i) => {
+                    {post.options?.map((option: any, i: number) => {
                       const percentage = Math.round((option.votes / 100));
                       const isVoted = post.voted === option.text;
                       return (

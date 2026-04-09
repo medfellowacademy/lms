@@ -75,9 +75,9 @@ export async function GET(
 
     // Filter locked content for non-admin users
     let filteredCourse = course;
-    if (!isAdmin) {
+    if (!isAdmin && course) {
       filteredCourse = {
-        ...course,
+        ...(course as any),
         modules: (course as any)?.modules?.map((module: any) => {
           // If module is locked, hide all lessons
           if (module.isLocked) {

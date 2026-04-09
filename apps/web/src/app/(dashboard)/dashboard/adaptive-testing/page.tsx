@@ -68,7 +68,7 @@ export default function AdaptiveTestingPage() {
   const [answers, setAnswers] = useState<{[key: number]: number}>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<number[]>([]);
 
-  const currentQuestion = sampleQuestions[currentQuestionIndex];
+  const currentQuestion = sampleQuestions[currentQuestionIndex] || null;
 
   useEffect(() => {
     if (isTestActive && timeLeft > 0 && !showExplanation) {
@@ -176,15 +176,19 @@ export default function AdaptiveTestingPage() {
             <div className="card-elevated p-6">
               <h2 className="font-semibold mb-4">Select Topics</h2>
               <div className="flex flex-wrap gap-2">
-                {performanceData.topicBreakdown.map((topic) => (
-                  <button
-                    key={topic.topic}
-                    className="px-4 py-2 rounded-xl bg-muted hover:bg-primary/10 hover:text-primary transition-all text-sm"
-                  >
-                    {topic.topic}
-                    <span className="ml-2 text-muted-foreground">({topic.attempts})</span>
-                  </button>
-                ))}
+                {performanceData.topicBreakdown.length > 0 ? (
+                  performanceData.topicBreakdown.map((topic: any) => (
+                    <button
+                      key={topic.topic}
+                      className="px-4 py-2 rounded-xl bg-muted hover:bg-primary/10 hover:text-primary transition-all text-sm"
+                    >
+                      {topic.topic}
+                      <span className="ml-2 text-muted-foreground">({topic.attempts})</span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No topics available yet. Start practicing to see your topic breakdown.</p>
+                )}
                 <button className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm">
                   All Topics
                 </button>
@@ -246,7 +250,7 @@ export default function AdaptiveTestingPage() {
                 Topic Mastery
               </h3>
               <div className="space-y-3">
-                {performanceData.topicBreakdown.map((topic) => (
+                {performanceData.topicBreakdown.length > 0 ? performanceData.topicBreakdown.map((topic: any) => (
                   <div key={topic.topic}>
                     <div className="flex justify-between text-sm mb-1">
                       <span>{topic.topic}</span>
@@ -268,7 +272,9 @@ export default function AdaptiveTestingPage() {
                       />
                     </div>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-muted-foreground">No topic data available yet.</p>
+                )}
               </div>
             </div>
 
@@ -278,7 +284,7 @@ export default function AdaptiveTestingPage() {
                 Progress Trend
               </h3>
               <div className="h-24 flex items-end justify-between gap-2">
-                {performanceData.difficultyProgression.map((data, i) => (
+                {performanceData.difficultyProgression.length > 0 ? performanceData.difficultyProgression.map((data: any, i: number) => (
                   <div key={data.week} className="flex-1 flex flex-col items-center gap-1">
                     <motion.div
                       initial={{ height: 0 }}
@@ -287,10 +293,31 @@ export default function AdaptiveTestingPage() {
                     />
                     <span className="text-xs text-muted-foreground">{data.week}</span>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-sm text-muted-foreground text-center w-full">No progress data available yet.</p>
+                )}
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No questions available
+  if (sampleQuestions.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div className="card-elevated p-12 text-center">
+          <Brain className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">No Questions Available</h2>
+          <p className="text-muted-foreground">Questions will be loaded from the database.</p>
+          <button 
+            onClick={() => setIsTestActive(false)}
+            className="btn-primary mt-6"
+          >
+            Back to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -324,7 +351,7 @@ export default function AdaptiveTestingPage() {
           <button 
             onClick={toggleFlag}
             className={`p-2 rounded-lg ${
-              flaggedQuestions.includes(currentQuestion.id) 
+              currentQuestion && flaggedQuestions.includes(currentQuestion.id) 
                 ? 'bg-achievement-500/20 text-achievement-500' 
                 : 'bg-muted'
             }`}
@@ -342,6 +369,10 @@ export default function AdaptiveTestingPage() {
         {/* Question Panel */}
         <div className="lg:col-span-3 space-y-6">
           <div className="card-elevated p-6">
+            {!currentQuestion ? (
+              <p className="text-center text-muted-foreground">No question available</p>
+            ) : (
+              <>
             {/* Question Meta */}
             <div className="flex items-center gap-3 mb-6">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -377,7 +408,7 @@ export default function AdaptiveTestingPage() {
 
             {/* Answer Options */}
             <div className="space-y-3">
-              {currentQuestion.options.map((option, index) => {
+              {currentQuestion?.options?.map((option: string, index: number) => {
                 const isSelected = selectedAnswer === index;
                 const isCorrect = index === currentQuestion.correctAnswer;
                 const showResult = showExplanation;
@@ -506,6 +537,8 @@ export default function AdaptiveTestingPage() {
                 )}
               </div>
             </div>
+              </>
+            )}
           </div>
         </div>
 
