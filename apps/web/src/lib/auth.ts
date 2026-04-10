@@ -23,6 +23,10 @@ export interface SessionUser extends AuthUser {
 const SESSION_COOKIE = 'medfellow_session';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'medfellow-dev-secret-change-in-production';
 
+if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET environment variable must be set in production. Generate one with: openssl rand -base64 32');
+}
+
 // Simple HMAC-based session token (userId signed with secret)
 function createSessionToken(userId: string): string {
   const payload = Buffer.from(JSON.stringify({ userId, iat: Date.now() })).toString('base64url');

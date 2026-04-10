@@ -10,11 +10,20 @@ export async function POST(request: NextRequest) {
     await seedIfNeeded();
 
     const body = await request.json();
-    const { username, password, firstName, lastName } = body;
+    const { username, password, firstName, lastName, email } = body;
 
-    if (!username || !password || !firstName || !lastName) {
+    if (!username || !password || !firstName || !lastName || !email) {
       return NextResponse.json(
         { error: 'All fields are required' },
+        { status: 400 }
+      );
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email address' },
         { status: 400 }
       );
     }
@@ -26,11 +35,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already exists
-    const existing = await db.user.findFirst({ where: { username: username.toLowerCase() } });
-    if (existing) {
+    // Check if user already exists (by username or email)
+    const existingByUsername = await db.user.findFirst({ where: { username: username.toLowerCase() } });
+    if (existingByUsername) {
       return NextResponse.json(
         { error: 'An account with this username already exists' },
+        { status: 409 }
+      );
+    }
+
+    const existingByEmail = await db.user.findFirst({ where: { email: email.toLowerCase() } });
+    if (existingByEmail) {
+      return NextResponse.json(
+        { error: 'An account with this email already exists' },
         { status: 409 }
       );
     }
@@ -39,7 +56,7 @@ export async function POST(request: NextRequest) {
     const user = await db.user.create({
       data: {
         username: username.toLowerCase(),
-        email: `${username.toLowerCase()}@medfellow.local`, // Generate a placeholder email
+        email: email.toLowerCase(),
         passwordHash: hashPassword(password),
         firstName,
         lastName,

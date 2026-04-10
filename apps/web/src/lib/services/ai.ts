@@ -135,7 +135,7 @@ export async function* streamChat(
       throw new Error('OpenAI API key not configured');
     }
     const stream = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-4-turbo',
       messages: fullMessages,
       stream: true,
       temperature: 0.7,
@@ -154,7 +154,7 @@ export async function* streamChat(
       throw new Error('Anthropic API key not configured');
     }
     const stream = await anthropic.messages.stream({
-      model: 'claude-3-opus-20240229',
+      model: 'claude-opus-4-6',
       max_tokens: 2000,
       messages: fullMessages.filter(m => m.role !== 'system').map(m => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',
@@ -189,7 +189,7 @@ export async function chat(
       throw new Error('OpenAI API key not configured');
     }
     const response = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-4-turbo',
       messages: fullMessages,
       temperature: 0.7,
       max_tokens: 2000,
@@ -205,7 +205,7 @@ export async function chat(
       throw new Error('Anthropic API key not configured');
     }
     const response = await anthropic.messages.create({
-      model: 'claude-3-opus-20240229',
+      model: 'claude-opus-4-6',
       max_tokens: 2000,
       messages: fullMessages.filter(m => m.role !== 'system').map(m => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',

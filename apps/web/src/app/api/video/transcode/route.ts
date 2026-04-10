@@ -14,42 +14,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate job ID
+    const hasMux = !!process.env.MUX_TOKEN_ID && !!process.env.MUX_TOKEN_SECRET;
+    const hasMediaConvert = !!process.env.AWS_ACCESS_KEY_ID && !!process.env.AWS_MEDIA_CONVERT_ENDPOINT;
+
+    if (!hasMux && !hasMediaConvert) {
+      return NextResponse.json(
+        {
+          error: 'Video transcoding is not configured. Set MUX_TOKEN_ID + MUX_TOKEN_SECRET (or AWS MediaConvert credentials) in your environment variables.',
+          configured: false,
+        },
+        { status: 501 }
+      );
+    }
+
     const jobId = `transcode-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
-    // In production, this would:
-    // 1. Upload to cloud storage (S3, GCS, etc.)
-    // 2. Trigger transcoding service (AWS MediaConvert, Mux, etc.)
-    // 3. Store job info in database
-    // 4. Return job ID for status polling
-
-    // For now, simulate with mock data
-    const mockJob = {
-      jobId,
-      videoUrl,
-      options,
-      status: 'queued',
-      progress: 0,
-      createdAt: new Date(),
-    };
-
-    // Store in database (you'd create a VideoTranscoding model)
-    console.log('Transcoding job created:', mockJob);
-
-    // In production, trigger actual transcoding service here
-    // Example with AWS MediaConvert:
-    // const mediaconvert = new AWS.MediaConvert();
-    // await mediaconvert.createJob({...}).promise();
-
-    // Example with Mux:
-    // const Mux = require('@mux/mux-node');
-    // const mux = new Mux();
-    // await mux.Video.Assets.create({...});
+    // TODO: integrate with Mux or AWS MediaConvert using the credentials above
+    // Mux example:
+    //   const Mux = require('@mux/mux-node');
+    //   const mux = new Mux(process.env.MUX_TOKEN_ID, process.env.MUX_TOKEN_SECRET);
+    //   const asset = await mux.Video.Assets.create({ input: videoUrl, playback_policy: 'public' });
+    //
+    // AWS MediaConvert example:
+    //   const mediaconvert = new AWS.MediaConvert({ endpoint: process.env.AWS_MEDIA_CONVERT_ENDPOINT });
+    //   await mediaconvert.createJob({...}).promise();
 
     return NextResponse.json({
       success: true,
       jobId,
-      message: 'Transcoding job started',
+      message: 'Transcoding job queued',
     });
   } catch (error) {
     console.error('Transcode start error:', error);
