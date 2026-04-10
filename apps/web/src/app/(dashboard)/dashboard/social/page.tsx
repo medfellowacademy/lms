@@ -42,7 +42,7 @@ import {
   Activity,
 } from 'lucide-react';
 
-const feedPosts = [
+const feedPosts: any[] = [
   {
     id: 1,
     type: 'text',
