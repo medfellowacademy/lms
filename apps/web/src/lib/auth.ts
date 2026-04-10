@@ -23,22 +23,27 @@ export interface SessionUser extends AuthUser {
 const SESSION_COOKIE = 'medfellow_session';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'medfellow-dev-secret-change-in-production';
 
-if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
-  throw new Error('SESSION_SECRET environment variable must be set in production. Generate one with: openssl rand -base64 32');
+function getSessionSecret(): string {
+  if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+    throw new Error('SESSION_SECRET environment variable must be set in production. Generate one with: openssl rand -base64 32');
+  }
+  return SESSION_SECRET;
 }
 
 // Simple HMAC-based session token (userId signed with secret)
 function createSessionToken(userId: string): string {
+  const secret = getSessionSecret();
   const payload = Buffer.from(JSON.stringify({ userId, iat: Date.now() })).toString('base64url');
-  const sig = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('base64url');
+  const sig = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
   return `${payload}.${sig}`;
 }
 
 function verifySessionToken(token: string): { userId: string } | null {
   try {
+    const secret = getSessionSecret();
     const [payload, sig] = token.split('.');
     if (!payload || !sig) return null;
-    const expected = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('base64url');
+    const expected = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
     if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString());
     // Expire after 7 days
