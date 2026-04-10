@@ -149,72 +149,71 @@ export async function POST(request: NextRequest) {
       title,
       description,
       shortDescription,
-      category,
       difficulty = 'BEGINNER',
-      price = 0,
-      duration = 0,
       instructorId,
-      prerequisites = [],
-      learningOutcomes = [],
-      targetAudience = [],
       xpReward = 100,
+      modules = [],
     } = body;
 
-    // Validate required fields
     if (!title) {
-      return NextResponse.json(
-        { success: false, error: 'Title is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: 'Title is required' }, { status: 400 });
     }
 
     if (!description) {
-      return NextResponse.json(
-        { success: false, error: 'Description is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: 'Description is required' }, { status: 400 });
     }
 
-    // Generate slug from title
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+    // Generate unique slug
+    const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const existing = await prisma.course.findUnique({ where: { slug: baseSlug } });
+    const slug = existing ? `${baseSlug}-${Date.now()}` : baseSlug;
 
-    // Check if slug already exists
-    const existingCourse = await prisma.course.findUnique({
-      where: { slug },
-    });
-
-    let finalSlug = slug;
-    if (existingCourse) {
-      finalSlug = `${slug}-${Date.now()}`;
-    }
-
-    // Create course
+    // Create course + modules + lessons in one transaction
     const course = await prisma.course.create({
       data: {
         title,
-        slug: finalSlug,
+        slug,
         description,
-        shortDescription,
-        category: category || 'General',
+        shortDescription: shortDescription || '',
+        category: 'General',
         difficulty: difficulty.toUpperCase(),
-        price,
-        duration,
+        price: 0,
+        duration: 0,
         instructorId: instructorId || 'system',
-        prerequisites,
-        learningOutcomes,
-        targetAudience,
+        prerequisites: [],
+        learningOutcomes: [],
+        targetAudience: [],
         xpReward,
         status: 'DRAFT',
+        modules: modules.length > 0 ? {
+          create: modules.map((mod: any, mi: number) => ({
+            title: mod.title || `Module ${mi + 1}`,
+            description: mod.description || '',
+            order: mod.order ?? mi,
+            lessons: mod.lessons?.length > 0 ? {
+              create: mod.lessons.map((lesson: any, li: number) => ({
+                title: lesson.title || `Lesson ${li + 1}`,
+                description: lesson.description || '',
+                order: lesson.order ?? li,
+                type: lesson.contentTypes?.includes('VIDEO') ? 'VIDEO'
+                  : lesson.contentTypes?.includes('PPT') ? 'TEXT'
+                  : lesson.contentTypes?.includes('EBOOK') ? 'TEXT'
+                  : 'TEXT',
+                videoUrl: lesson.videoUrl || null,
+                content: lesson.pptUrl || lesson.ebookUrl || lesson.textContent || null,
+                duration: 0,
+                xpReward: 10,
+              })),
+            } : undefined,
+          })),
+        } : undefined,
+      },
+      include: {
+        modules: { include: { lessons: true } },
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      data: course,
-    });
+    return NextResponse.json({ success: true, data: course });
   } catch (error) {
     console.error('Create course error:', error);
     return NextResponse.json(
