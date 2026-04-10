@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import {
   uploadVideo,
+  uploadImage,
   createVideoThumbnail,
   getVideoDuration,
   deleteFile,
@@ -62,33 +63,22 @@ export function VideoUploader({
       // Get video duration
       const duration = await getVideoDuration(file);
 
-      // Create thumbnail
+      // Create and upload thumbnail to Supabase
       let thumbnailUrl: string | undefined;
       try {
         const thumbnailBlob = await createVideoThumbnail(file);
-        // In production, upload thumbnail to storage
-        // thumbnailUrl = await uploadImage(thumbnailBlob);
+        const thumbnailFile = new File([thumbnailBlob], `thumb-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const thumbResult = await uploadImage(thumbnailFile, { bucket: 'thumbnails' });
+        thumbnailUrl = thumbResult.url;
       } catch (e) {
         console.warn('Could not create thumbnail:', e);
       }
 
-      // Simulate progress for demo
-      const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 10;
-        });
-      }, 200);
-
-      // Upload video
+      // Upload video to Supabase with progress
       const result = await uploadVideo(file, {
         onProgress: (progress) => setUploadProgress(progress.percentage),
       });
 
-      clearInterval(progressInterval);
       setUploadProgress(100);
 
       onChange(result.url, { duration, thumbnail: thumbnailUrl });

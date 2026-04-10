@@ -42,65 +42,17 @@ import {
   Activity,
 } from 'lucide-react';
 
-const feedPosts: any[] = [
-  {
-    id: 1,
-    type: 'text',
-    author: { name: 'Dr. Sarah Chen', title: 'Interventional Cardiologist', institution: 'Mayo Clinic', avatar: '👩‍⚕️', verified: true },
-    content: 'Exciting new data from ISCHEMIA-CKD — invasive strategy shows significant benefit in patients with moderate-to-severe CKD. This changes my approach to revascularization discussions in this high-risk cohort. Thoughts from the community?',
-    tags: ['ISCHEMIA', 'CKD', 'PCI', 'Cardiology'],
-    likes: 142, comments: 38, shares: 24, saves: 57,
-    liked: false, saved: false,
-    timestamp: '2h ago',
-  },
-  {
-    id: 2,
-    type: 'text',
-    author: { name: 'Dr. Raj Patel', title: 'Structural Heart Fellow', institution: 'Cleveland Clinic', avatar: '👨‍⚕️', verified: false },
-    content: 'Quick pearl from today\'s cath lab: when crossing a heavily calcified aortic valve for TAVR, pre-shaping your wire to match the valve angle dramatically improves first-pass success. Happy to share our institutional technique.',
-    tags: ['TAVR', 'StructuralHeart', 'CathLab', 'Technique'],
-    likes: 89, comments: 21, shares: 15, saves: 43,
-    liked: false, saved: false,
-    timestamp: '5h ago',
-  },
-  {
-    id: 3,
-    type: 'poll',
-    author: { name: 'Dr. Maria Lopez', title: 'EP Cardiologist', institution: 'Johns Hopkins', avatar: '👩‍⚕️', verified: true },
-    content: 'For AF ablation in patients with persistent AF >12 months, what is your preferred strategy?',
-    tags: ['AFib', 'Ablation', 'EP'],
-    options: [
-      { text: 'PVI only', votes: 32 },
-      { text: 'PVI + posterior wall isolation', votes: 41 },
-      { text: 'PVI + linear lesions', votes: 18 },
-      { text: 'Individualized based on mapping', votes: 53 },
-    ],
-    totalVotes: 144,
-    voted: null,
-    likes: 67, comments: 29, shares: 11, saves: 22,
-    liked: false, saved: false,
-    timestamp: '1d ago',
-  },
-];
+// Feed posts will be loaded from the database
+const feedPosts: any[] = [];
 
-const trendingTopics = [
-  { tag: 'TAVR2025', posts: 4821, trending: '+18%' },
-  { tag: 'AFibAblation', posts: 3204, trending: '+12%' },
-  { tag: 'CardioOncology', posts: 2891, trending: '+9%' },
-  { tag: 'HeartFailure', posts: 2543, trending: '+7%' },
-  { tag: 'CTO_PCI', posts: 1967, trending: '+5%' },
-];
+// Trending topics will be loaded from the database
+const trendingTopics: any[] = [];
 
-const suggestedConnections = [
-  { name: 'Dr. James Kim', title: 'Interventional Cardiology', avatar: '👨‍⚕️', verified: true, mutualConnections: 12 },
-  { name: 'Dr. Priya Sharma', title: 'Heart Failure Specialist', avatar: '👩‍⚕️', verified: false, mutualConnections: 7 },
-  { name: 'Dr. Luis Torres', title: 'Electrophysiologist', avatar: '🧑‍⚕️', verified: true, mutualConnections: 5 },
-];
+// Suggested connections will be loaded from the database
+const suggestedConnections: any[] = [];
 
-const liveStreams = [
-  { id: 1, title: 'Live CTO PCI: Complex Bifurcation Case', host: 'Dr. Chen', viewers: '1.2K', thumbnail: '' },
-  { id: 2, title: 'TAVR Case Conference — High-Risk Patient', host: 'Dr. Patel', viewers: '834', thumbnail: '' },
-];
+// Live streams will be loaded from the database
+const liveStreams: any[] = [];
 
 export default function SocialPage() {
   const [activeTab, setActiveTab] = useState<'feed' | 'discover' | 'live' | 'groups'>('feed');
